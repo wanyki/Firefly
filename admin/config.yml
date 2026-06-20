@@ -3,7 +3,7 @@
 
 backend:
   name: github
-  repo: wonique/firefly  # 替换为你的 GitHub 仓库 (格式: 用户名/仓库名)
+  repo: wanyki/firefly  # 替换为你的 GitHub 仓库 (格式: 用户名/仓库名)
   branch: master
   base_url: https://wonique.space  # 替换为你的服务器地址
   auth_endpoint: auth
