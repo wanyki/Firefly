@@ -1,0 +1,145 @@
+# Decap CMS 配置文件
+# 文档: https://decapcms.org/docs/configuration-options/
+
+backend:
+  name: github
+  repo: wanyki/Firefly  # 替换为你的 GitHub 仓库 (格式: 用户名/仓库名)
+  branch: master
+  base_url: https://wonique.space  # 替换为你的服务器地址
+  auth_endpoint: auth
+
+# 媒体文件配置
+media_folder: "public/assets/images/uploads"
+public_folder: "/assets/images/uploads"
+
+# 站点配置
+site_url: https://wonique.space
+display_url: https://wonique.space
+
+# 搜索配置
+search: true
+slug:
+  encoding: "unicode"
+  clean_accents: true
+
+# 集合配置
+collections:
+  # 博客文章
+  - name: "posts"
+    label: "博客文章"
+    folder: "src/content/posts"
+    create: true
+    slug: "{{slug}}"
+    path: "{{slug}}"
+    preview_path: "posts/{{slug}}/"
+    media_folder: ""
+    public_folder: ""
+    summary: "{{title}} - {{year}}/{{month}}/{{day}}"
+    sortable_fields: ["published", "title", "category"]
+    view_filters:
+      - label: "草稿"
+        field: draft
+        pattern: true
+      - label: "已发布"
+        field: draft
+        pattern: false
+    fields:
+      - label: "标题"
+        name: "title"
+        widget: "string"
+        pattern: [".{1,100}", "标题长度不超过100个字符"]
+      - label: "发布日期"
+        name: "published"
+        widget: "datetime"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        format: "YYYY-MM-DD"
+      - label: "更新日期"
+        name: "updated"
+        widget: "datetime"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        format: "YYYY-MM-DD"
+        required: false
+      - label: "草稿"
+        name: "draft"
+        widget: "boolean"
+        default: false
+      - label: "描述"
+        name: "description"
+        widget: "text"
+        required: false
+      - label: "封面图"
+        name: "image"
+        widget: "image"
+        required: false
+        media_library:
+          config:
+            max_file_size: 5120000
+      - label: "标签"
+        name: "tags"
+        widget: "list"
+        required: false
+        allow_add: true
+        min: 0
+        max: 10
+      - label: "分类"
+        name: "category"
+        widget: "string"
+        required: false
+      - label: "置顶"
+        name: "pinned"
+        widget: "boolean"
+        default: false
+        required: false
+      - label: "作者"
+        name: "author"
+        widget: "string"
+        required: false
+        default: ""
+      - label: "语言"
+        name: "lang"
+        widget: "select"
+        options:
+          - { label: "中文", value: "zh_CN" }
+          - { label: "繁體中文", value: "zh_TW" }
+          - { label: "English", value: "en" }
+          - { label: "日本語", value: "ja" }
+          - { label: "Русский", value: "ru" }
+        required: false
+        default: ""
+      - label: "评论"
+        name: "comment"
+        widget: "boolean"
+        default: true
+        required: false
+      - label: "正文"
+        name: "body"
+        widget: "markdown"
+        buttons:
+          - bold
+          - italic
+          - code
+          - link
+          - heading-two
+          - heading-three
+          - quote
+          - bulleted-list
+          - numbered-list
+        editor_components:
+          - image
+          - code-block
+
+  # 特殊页面
+  - name: "spec"
+    label: "特殊页面"
+    folder: "src/content/spec"
+    create: false
+    slug: "{{slug}}"
+    fields:
+      - label: "标题"
+        name: "title"
+        widget: "string"
+      - label: "正文"
+        name: "body"
+        widget: "markdown"
