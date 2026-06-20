@@ -3,10 +3,13 @@
 
 backend:
   name: github
-  repo: wanyki/Firefly  # 替换为你的 GitHub 仓库 (格式: 用户名/仓库名)
+  repo: wonique/firefly  # 替换为你的 GitHub 仓库 (格式: 用户名/仓库名)
   branch: master
   base_url: https://wonique.space  # 替换为你的服务器地址
   auth_endpoint: auth
+
+# 语言设置
+locale: zh
 
 # 媒体文件配置
 media_folder: "public/assets/images/uploads"
@@ -29,13 +32,13 @@ collections:
     label: "博客文章"
     folder: "src/content/posts"
     create: true
-    slug: "{{slug}}"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     path: "{{slug}}"
     preview_path: "posts/{{slug}}/"
     media_folder: ""
     public_folder: ""
     summary: "{{title}} - {{year}}/{{month}}/{{day}}"
-    sortable_fields: ["published", "title", "category"]
+    sortable_fields: ["published", "title", "category", "pinned"]
     view_filters:
       - label: "草稿"
         field: draft
@@ -43,17 +46,22 @@ collections:
       - label: "已发布"
         field: draft
         pattern: false
+      - label: "置顶"
+        field: pinned
+        pattern: true
     fields:
       - label: "标题"
         name: "title"
         widget: "string"
         pattern: [".{1,100}", "标题长度不超过100个字符"]
+        required: true
       - label: "发布日期"
         name: "published"
         widget: "datetime"
         date_format: "YYYY-MM-DD"
         time_format: false
         format: "YYYY-MM-DD"
+        required: true
       - label: "更新日期"
         name: "updated"
         widget: "datetime"
@@ -65,10 +73,18 @@ collections:
         name: "draft"
         widget: "boolean"
         default: false
+        required: false
+      - label: "置顶"
+        name: "pinned"
+        widget: "boolean"
+        default: false
+        required: false
+        hint: "置顶文章会显示在首页最前面"
       - label: "描述"
         name: "description"
         widget: "text"
         required: false
+        pattern: [".{0,200}", "描述长度不超过200个字符"]
       - label: "封面图"
         name: "image"
         widget: "image"
@@ -76,6 +92,7 @@ collections:
         media_library:
           config:
             max_file_size: 5120000
+        hint: "建议尺寸 1200x630 像素"
       - label: "标签"
         name: "tags"
         widget: "list"
@@ -83,20 +100,25 @@ collections:
         allow_add: true
         min: 0
         max: 10
+        hint: "按回车添加标签"
       - label: "分类"
         name: "category"
-        widget: "string"
+        widget: "select"
+        options:
+          - { label: "日常", value: "日常" }
+          - { label: "技术", value: "技术" }
+          - { label: "算法", value: "算法" }
+          - { label: "明信片", value: "明信片" }
+          - { label: "游戏", value: "游戏" }
+          - { label: "数码", value: "数码" }
+          - { label: "随笔", value: "随笔" }
         required: false
-      - label: "置顶"
-        name: "pinned"
-        widget: "boolean"
-        default: false
-        required: false
+        hint: "选择文章分类"
       - label: "作者"
         name: "author"
         widget: "string"
         required: false
-        default: ""
+        default: "月初"
       - label: "语言"
         name: "lang"
         widget: "select"
@@ -107,12 +129,25 @@ collections:
           - { label: "日本語", value: "ja" }
           - { label: "Русский", value: "ru" }
         required: false
-        default: ""
+        default: "zh_CN"
       - label: "评论"
         name: "comment"
         widget: "boolean"
         default: true
         required: false
+        hint: "是否开启评论功能"
+      - label: "许可证"
+        name: "licenseName"
+        widget: "select"
+        options:
+          - { label: "默认", value: "" }
+          - { label: "CC BY 4.0", value: "CC BY 4.0" }
+          - { label: "CC BY-SA 4.0", value: "CC BY-SA 4.0" }
+          - { label: "CC BY-NC 4.0", value: "CC BY-NC 4.0" }
+          - { label: "CC BY-NC-SA 4.0", value: "CC BY-NC-SA 4.0" }
+          - { label: "CC0", value: "CC0" }
+        required: false
+        hint: "选择文章的版权许可证"
       - label: "正文"
         name: "body"
         widget: "markdown"
@@ -126,6 +161,7 @@ collections:
           - quote
           - bulleted-list
           - numbered-list
+          - image
         editor_components:
           - image
           - code-block
@@ -140,6 +176,38 @@ collections:
       - label: "标题"
         name: "title"
         widget: "string"
+        required: true
       - label: "正文"
         name: "body"
         widget: "markdown"
+        buttons:
+          - bold
+          - italic
+          - code
+          - link
+          - heading-two
+          - heading-three
+          - quote
+          - bulleted-list
+          - numbered-list
+          - image
+        editor_components:
+          - image
+          - code-block
+
+  # 媒体库
+  - name: "media"
+    label: "媒体库"
+    folder: "public/assets/images/uploads"
+    create: true
+    slug: "{{filename}}"
+    media_folder: ""
+    public_folder: ""
+    fields:
+      - label: "文件"
+        name: "file"
+        widget: "file"
+      - label: "描述"
+        name: "description"
+        widget: "string"
+        required: false
